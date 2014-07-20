@@ -1,8 +1,8 @@
 {
   "name": "jart",
-  "version": "0.0.1",
+  "version": "0.1.1",
   "description": "Filter and modify js/json objects.",
-  "main": "index.js",
+  "main": "jart.js",
   "scripts": {
     "test": "mocha"
   },
@@ -20,5 +20,13 @@
   "bugs": {
     "url": "https://github.com/sundaysenergy/jart/issues"
   },
-  "homepage": "https://github.com/sundaysenergy/jart"
+  "homepage": "https://github.com/sundaysenergy/jart",
+  "dependencies": {
+    "lodash": "^2.4.1",
+    "underscore.string": "^2.3.3"
+  },
+  "devDependencies": {
+    "mocha": "^1.20.1",
+    "chai": "^1.9.1"
+  }
 }
