@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/sundaysenergy/jart.git"
+    "url": "git://github.com/cape-io/jart.git"
   },
   "keywords": [
     "json",
@@ -18,12 +18,13 @@
   "author": "Kai Curry <kai@cape.io> (http://www.cape.io/)",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/sundaysenergy/jart/issues"
+    "url": "https://github.com/cape-io/jart/issues"
   },
-  "homepage": "https://github.com/sundaysenergy/jart",
+  "homepage": "https://github.com/cape-io/jart",
   "dependencies": {
     "lodash": "^2.4.1",
-    "underscore.string": "^2.3.3"
+    "underscore.string": "^2.3.3",
+    "boxfan": "^0.1.2"
   },
   "devDependencies": {
     "mocha": "^1.20.1",

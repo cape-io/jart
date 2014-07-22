@@ -1,8 +1,9 @@
 _ = require 'lodash'
-_.str = require 'underscore.string'
-_.mixin(_.str.exports())
+boxfan = require 'boxfan'
 
 module.exports =
+
+# @cape `without` should probably include _self
 
   model: (items, info) ->
     if _.isArray items
@@ -10,12 +11,11 @@ module.exports =
       items = _.map items, (item) =>
         # Send each item through the modifiers.
         return @model item, info
+
       # Remove the junk we don't want.
       if info.filter
-        items = _.filter items, (item) =>
-          @filter item, info.filter
-        if info.without
-          items = @without items, info.without
+        items = boxfan items, info.filter
+
       return items
 
     unless _.isObject items
@@ -43,11 +43,4 @@ module.exports =
     if info.clean
       items = @clean items
 
-  rm_prefix: (full_str, prefix, strip_slash = true) ->
-    #return _.str.ltrim full_str, prefix # <- too greedy
-    if full_str.substring(0, prefix.length) == prefix
-      full_str = full_str.substring(prefix.length)
-      if strip_slash and '/' == full_str.substring 0, 1
-        full_str = full_str.substring 1
-    return full_str
 
