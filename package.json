@@ -24,7 +24,7 @@
   "dependencies": {
     "boxfan": "0.x",
     "understory": "0.x",
-    "prairie": "^0.1.2"
+    "prairie": "0.x"
   },
   "devDependencies": {
     "mocha": "^1.20.1",

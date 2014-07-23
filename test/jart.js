@@ -12,6 +12,12 @@ jart = require('../jart');
 data = yaml.safeLoad(fs.readFileSync(__dirname + '/data.yaml'));
 
 describe('#jart', function() {
+  it('Returns false when the item passed does not match filters', function() {
+    return jart(data.items[0], data.j_filter).should.be["false"];
+  });
+  it('Returns plucked field when the item passed filter.', function() {
+    return jart(data.items[3], data.j_filter).should.equal(4);
+  });
   return it('Filters array of items based on boxfan filter object. Performs pluck.', function() {
     return jart(data.items, data.j_filter).should.eql(data.j_filter_result);
   });

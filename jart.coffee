@@ -6,6 +6,20 @@ prairie = require 'prairie'
 # `without` should probably include _self
 # 'path_prefix' should be in field.
 
+# Proccess a jart for a single entity.
+toss = (item, info) ->
+  # Add fields to items before filter.
+  item = model item, info
+  if info.filter
+    # Filter down the result.
+    unless boxfan item, info.filter
+      item = false
+      return item
+  # Clean it off.
+  item = land item, info
+  return item
+
+# Toss the jart over the fields.
 model = (item, info) ->
   # Remove the path prefix from the primary key.
   # if info.arg and info.arg.path_prefix and info.primary_key and items[info.primary_key]
@@ -13,26 +27,35 @@ model = (item, info) ->
 
   # Add prairie fields to item object.
   if info.field
+    console.log 'field'
     item = prairie item, info.field, info.primary_key
 
   # Array of Prairie object fields inside the `field` prop.
   if info.fields
-    fields item, info.fields
+    console.log 'fields'
+    item = fields item, info.fields
 
   if _.isObject info.default
+    console.log 'default'
     item = _.defaults item, info.default
 
   if _.isObject info.rename
+    console.log 'rename'
     item = _.rename item, info.rename
 
-  if info.clean
-    item = _.clean item
+  return item
 
+# Remove the junk we don't want.
+land = (item, info) ->
   if info.pluck
     item = _.pluck item, info.pluck
   else if info.without
     item = _.without item, info.without
-  return
+
+  if info.clean
+    item = _.clean item
+
+  return item
 
 fields = (item, fields_obj) ->
   _.each fields_obj, (field_info) ->
@@ -50,17 +73,14 @@ fields = (item, fields_obj) ->
 
 module.exports = (items, info) ->
   if _.isArray items
-    # Add fields to items before filter.
-    items = _.map items, (item) =>
-      # Send each item through the modifiers.
-      return model item, info
-
-    # Remove the junk we don't want.
-    if info.filter
-      items = boxfan items, info.filter
-
-    return items
+    return_items = []
+    _.each items, (item, i) ->
+      item = toss item, info
+      if item
+        return_items.push item
+      delete items[i]
+    return return_items
   else if _.isObject items
-    return model items, info
+    return toss items, info
   else
     return items
