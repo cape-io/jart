@@ -1,0 +1,71 @@
+---
+items:
+  -
+    id: 1
+    name: kai
+    color: blue
+    path: kai.txt
+  -
+    id: 2
+    name: bob
+    color: green
+    pet: cat
+    path: user/bob.txt
+  -
+    id: 3
+    name: tim
+    color: red
+    pet: ''
+    path: tim/likes/to/run.txt
+  -
+    id: 4
+    name: kristian
+    color: white
+    pet: false
+    path: mr/art/man.txt
+  -
+    id: 5
+    name: kristian
+    color: blue
+    path: kb.txt
+  -
+    id: 6
+    name: tim
+    color: green
+    path: tl.txt
+
+j_filter:
+  filter:
+    must:
+      name: kristian
+  pluck: id
+
+j_filter_result: [4, 5]
+
+field_t_rep:
+  template:
+    arg: '{{cat}} {{dog}}'
+    func: token_replace
+
+field_arr:
+  name:
+    -
+      arg: '{{cat}}, , {{cat}}, {{&bob}}'
+      func: token_replace
+    -
+      func: string_replace
+      arg:
+        string: true
+        regex: "e'$"
+        replace: 'é'
+    -
+      func: split
+      arg:
+        string: true
+        split_on: ','
+        trim: true
+    - compact
+    - unique
+    -
+      func: join
+      join_with: ', '

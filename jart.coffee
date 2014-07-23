@@ -1,46 +1,66 @@
-_ = require 'lodash'
+_ = require 'understory'
 boxfan = require 'boxfan'
+prairie = require 'prairie'
 
-module.exports =
+# @cape
+# `without` should probably include _self
+# 'path_prefix' should be in field.
 
-# @cape `without` should probably include _self
+model = (item, info) ->
+  # Remove the path prefix from the primary key.
+  # if info.arg and info.arg.path_prefix and info.primary_key and items[info.primary_key]
+  #   items[info.primary_key] = @rm_prefix items[info.primary_key], info.arg.path_prefix
 
-  model: (items, info) ->
-    if _.isArray items
-      # Add fields to items before filter.
-      items = _.map items, (item) =>
-        # Send each item through the modifiers.
-        return @model item, info
+  # Add prairie fields to item object.
+  if info.field
+    item = prairie item, info.field, info.primary_key
 
-      # Remove the junk we don't want.
-      if info.filter
-        items = boxfan items, info.filter
+  # Array of Prairie object fields inside the `field` prop.
+  if info.fields
+    fields item, info.fields
 
-      return items
+  if _.isObject info.default
+    item = _.defaults item, info.default
 
-    unless _.isObject items
-      return items
+  if _.isObject info.rename
+    item = _.rename item, info.rename
 
-    return @_model items, info
+  if info.clean
+    item = _.clean item
 
-  _model: (items, info) ->
-    # Remove the path prefix from the primary key.
-    if info.arg and info.arg.path_prefix and info.primary_key and items[info.primary_key]
-      items[info.primary_key] = @rm_prefix items[info.primary_key], info.arg.path_prefix
-    if info.pluck
-      items = @pluck items, info.pluck
-    if info.default
-      items = _.defaults items, info.default
-    if info.field
-      items = @field items, info.field, info.primary_key
-    if info.fields
-      items = @field items, info.fields, info.primary_key
-    if info.without and not info.filter
-      items = @without items, info.without
-    if info.rename
-      items = @rename items, info.rename
-    # emit?
-    if info.clean
-      items = @clean items
+  if info.pluck
+    item = _.pluck item, info.pluck
+  else if info.without
+    item = _.without item, info.without
+  return
 
+fields = (item, fields_obj) ->
+  _.each fields_obj, (field_info) ->
+    if _.isObject(field_info.field)
+      # Mostly this is to apply fields conditionally.
+      if _.isObject(field_info.filter)
+        # Only process field if passes check.
+        if boxfan(item, info.filter)
+          item = prairie item, field_info.field, info.primary_key
+      # No filter prop.
+      else
+        item = prairie item, field_info.field, info.primary_key
+    return
+  return
 
+module.exports = (items, info) ->
+  if _.isArray items
+    # Add fields to items before filter.
+    items = _.map items, (item) =>
+      # Send each item through the modifiers.
+      return model item, info
+
+    # Remove the junk we don't want.
+    if info.filter
+      items = boxfan items, info.filter
+
+    return items
+  else if _.isObject items
+    return model items, info
+  else
+    return items
