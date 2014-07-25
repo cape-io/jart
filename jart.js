@@ -21,28 +21,40 @@ toss = function(item, info) {
 
 model = function(item, info) {
   if (info.field) {
-    console.log('field');
     item = prairie(item, info.field, info.primary_key);
   }
   if (info.fields) {
-    console.log('fields');
-    item = fields(item, info.fields);
+    item = fields(item, info);
   }
   if (_.isObject(info["default"])) {
-    console.log('default');
     item = _.defaults(item, info["default"]);
   }
   if (_.isObject(info.rename)) {
-    console.log('rename');
     item = _.rename(item, info.rename);
   }
+  return item;
+};
+
+fields = function(item, info) {
+  _.each(info.fields, function(field_info) {
+    if (_.isObject(field_info.field)) {
+      if (_.isObject(field_info.filter)) {
+        if (boxfan(item, field_info.filter)) {
+          item = prairie(item, field_info.field, info.primary_key);
+        }
+      } else {
+        item = prairie(item, field_info.field, info.primary_key);
+      }
+    }
+  });
   return item;
 };
 
 land = function(item, info) {
   if (info.pluck) {
     item = _.pluck(item, info.pluck);
-  } else if (info.without) {
+  }
+  if (info.without) {
     item = _.without(item, info.without);
   }
   if (info.clean) {
@@ -51,22 +63,11 @@ land = function(item, info) {
   return item;
 };
 
-fields = function(item, fields_obj) {
-  _.each(fields_obj, function(field_info) {
-    if (_.isObject(field_info.field)) {
-      if (_.isObject(field_info.filter)) {
-        if (boxfan(item, info.filter)) {
-          item = prairie(item, field_info.field, info.primary_key);
-        }
-      } else {
-        item = prairie(item, field_info.field, info.primary_key);
-      }
-    }
-  });
-};
-
 module.exports = function(items, info) {
   var return_items;
+  if (!_.isObject(info)) {
+    return items;
+  }
   if (_.isArray(items)) {
     return_items = [];
     _.each(items, function(item, i) {

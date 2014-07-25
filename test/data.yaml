@@ -42,30 +42,36 @@ j_filter:
 
 j_filter_result: [4, 5]
 
-field_t_rep:
-  template:
-    arg: '{{cat}} {{dog}}'
-    func: token_replace
+j_info:
+  filter:
+    should:
+      id: [1, 4]
+  field:
+    filename: true
+  default:
+    pet: dog
+  fields:
+    -
+      filter:
+        must:
+          id: 1
+      field:
+        name:
+          func: capitalize
+          arg_field: name
+  rename:
+    color: fav_color
 
-field_arr:
-  name:
-    -
-      arg: '{{cat}}, , {{cat}}, {{&bob}}'
-      func: token_replace
-    -
-      func: string_replace
-      arg:
-        string: true
-        regex: "e'$"
-        replace: 'é'
-    -
-      func: split
-      arg:
-        string: true
-        split_on: ','
-        trim: true
-    - compact
-    - unique
-    -
-      func: join
-      join_with: ', '
+j_info_result:
+  -
+    id: 1
+    name: Kai
+    fav_color: blue
+    pet: dog
+    path: kai.txt
+  -
+    id: 4
+    name: kristian
+    fav_color: white
+    pet: false
+    path: mr/art/man.txt
