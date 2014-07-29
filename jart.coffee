@@ -53,10 +53,10 @@ fields = (item, info) ->
       if _.isObject(field_info.filter)
         # Only process field if passes check.
         if boxfan(item, field_info.filter)
-          item = prairie item, field_info.field, info.primary_key
+          item = model item, field_info, info
       # No filter prop.
       else
-        item = prairie item, field_info.field, info.primary_key
+        item = model item, field_info, info
     return
   #console.log item
   return item

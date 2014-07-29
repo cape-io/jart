@@ -59,6 +59,10 @@ j_info:
         name:
           func: capitalize
           arg_field: name
+      default:
+        ruler: normal
+      rename:
+        path: filename
   rename:
     color: fav_color
 
@@ -68,7 +72,8 @@ j_info_result:
     name: Kai
     fav_color: blue
     pet: dog
-    path: kai.txt
+    filename: kai.txt
+    ruler: normal
   -
     id: 4
     name: kristian
